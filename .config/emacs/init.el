@@ -1,29 +1,30 @@
-;; Switch Meta and Option for GUI
-;; Keybinds
-(global-set-key [(hyper a)] 'mark-whole-buffer)
-(global-set-key [(hyper v)] 'yank)
-(global-set-key [(hyper c)] 'kill-ring-save)
-(global-set-key [(hyper s)] 'save-buffer)
-(global-set-key [(hyper l)] 'goto-line)
-(global-set-key [(hyper w)]
-                (lambda () (interactive) (delete-window)))
-(global-set-key [(hyper z)] 'undo)
+(defvar os--windows (memq system-type '(ms-dos windows-nt cygwin)))
+(defvar os--macos (eq system-type 'darwin))
+(defvar os--linux (eq system-type 'gnu/linux))
 
-;; mac switch meta key
-(defun mac-switch-meta nil
-  "switch meta between Option and Command"
-  (interactive)
-  (if (eq mac-option-modifier nil)
+(unless os--windows
+  ;; Switch Meta and Option for GUI
+  ;; Keybinds
+  (global-set-key [(hyper a)] 'mark-whole-buffer)
+  (global-set-key [(hyper v)] 'yank)
+  (global-set-key [(hyper c)] 'kill-ring-save)
+  (global-set-key [(hyper s)] 'save-buffer)
+  (global-set-key [(hyper l)] 'goto-line)
+  (global-set-key [(hyper w)]
+                  (lambda () (interactive) (delete-window)))
+  (global-set-key [(hyper z)] 'undo)
+
+  ;; mac switch meta key
+  (defun mac-switch-meta nil
+    "switch meta between Option and Command"
+    (interactive)
+    (if (eq mac-option-modifier nil)
+        (progn
+          (setq mac-option-modifier 'meta)
+          (setq mac-command-modifier 'hyper))
       (progn
-	(setq mac-option-modifier 'meta)
-	(setq mac-command-modifier 'hyper)
-	)
-    (progn
-      (setq mac-option-modifier nil)
-      (setq mac-command-modifier 'meta)
-      )
-    )
-  )
+        (setq mac-option-modifier nil)
+        (setq mac-command-modifier 'meta)))))
 
 ;; Following taken from emfy on GitHub
 (setq inhibit-startup-screen t)
@@ -131,27 +132,28 @@
 ;;   (require 'xah-fly-keys)
 ;;   (xah-fly-keys 1))
 
-;; Use built-in org
-(straight-use-package '(org :type built-in))
+(unless os--windows
+  ;; Use built-in org
+  (straight-use-package '(org :type built-in))
 
-(use-package org-roam
-  :custom
-  (org-roam-directory (file-truename "~/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/org-roam"))
-  (org-roam-completion-everywhere t)
-  (org-roam-dailies-directory "journals/")
-  (org-roam-capture-templates
-   '(("d" "default" plain
-      "%?" :target
-      (file+head "pages/${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)))
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today)
-         :map org-mode-map
-         ("C-M-i"   . completion-at-point))
-  :config
-  (org-roam-db-autosync-mode))
+  (use-package org-roam
+    :custom
+    (org-roam-directory (file-truename "~/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/org-roam"))
+    (org-roam-completion-everywhere t)
+    (org-roam-dailies-directory "journals/")
+    (org-roam-capture-templates
+     '(("d" "default" plain
+        "%?" :target
+        (file+head "pages/${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n c" . org-roam-capture)
+           ;; Dailies
+           ("C-c n j" . org-roam-dailies-capture-today)
+           :map org-mode-map
+           ("C-M-i"   . completion-at-point))
+    :config
+    (org-roam-db-autosync-mode)))

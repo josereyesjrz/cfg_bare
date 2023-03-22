@@ -29,12 +29,6 @@
 ;; Following taken from emfy on GitHub
 (setq inhibit-startup-screen t)
 
-;; Interactively do things.
-(ido-mode 1)
-(ido-everywhere)
-(setq ido-enable-flex-matching t)
-(fido-mode)
-
 ;; Show stray whitespace.
 (setq-default show-trailing-whitespace t)
 (setq-default indicate-empty-lines t)
@@ -84,6 +78,12 @@
 
 ;; Enable ligatures
 (mac-auto-operator-composition-mode)
+
+;; Enable spell check
+(setq ispell-program-name "/opt/homebrew/bin/aspell")
+(setq ispell-local-dictionary "en_US-ENES")
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 ;; Set up straight.el
 (setq straight-use-package-by-default t)
@@ -157,3 +157,13 @@
            ("C-M-i"   . completion-at-point))
     :config
     (org-roam-db-autosync-mode)))
+
+;; Vertical completions
+(use-package vertico
+  :init
+  (vertico-mode))
+
+;; Save completion history
+(use-package savehist
+  :init
+  (savehist-mode))

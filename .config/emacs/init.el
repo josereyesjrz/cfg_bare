@@ -24,7 +24,10 @@
           (setq mac-command-modifier 'hyper))
       (progn
         (setq mac-option-modifier nil)
-        (setq mac-command-modifier 'meta)))))
+        (setq mac-command-modifier 'meta))))
+
+  ;; Add homebrew to Exec Path
+  (setq exec-path (append exec-path '("/opt/homebrew/bin"))))
 
 ;; Following taken from emfy on GitHub
 (setq inhibit-startup-screen t)
@@ -80,8 +83,7 @@
 (mac-auto-operator-composition-mode)
 
 ;; Enable spell check
-(setq ispell-program-name "/opt/homebrew/bin/aspell")
-(setq ispell-local-dictionary "en_US-ENES")
+(unless os--windows (setq ispell-local-dictionary "en_US-ENES"))
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
